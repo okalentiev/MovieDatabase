@@ -16,5 +16,9 @@ extension Constants {
             static let title = "empty_view_title"
             static let retryButton = "empty_view_retry_button_title"
         }
+
+        struct Movies {
+            static let title = "movies_title"
+        }
     }
 }

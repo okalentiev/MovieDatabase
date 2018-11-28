@@ -10,8 +10,12 @@ import Foundation
 
 final class MovieListCoordinator: Coordinator {
 
-    private lazy var listViewController: ViewController = {
-        return ViewController()
+    private lazy var listViewController: MovieListViewController = {
+        let viewModel = MovieListViewModel()
+        let viewController = MovieListViewController(viewHandler: viewModel)
+        viewModel.view = viewController
+
+        return viewController
     }()
 
     override init(router: RouterType) {
