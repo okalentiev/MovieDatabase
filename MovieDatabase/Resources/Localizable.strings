@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  MovieDatabase
+
+  Created by Oleksii Kalentiev on 11/28/18.
+  Copyright © 2018 Oleksii Kalentiev. All rights reserved.
+*/
+
+// Empty View
+"empty_view_title" = "Hmm, nothing to show 👀";
+"empty_view_retry_button_title" = "Retry";
+
+// Movies
+"movies_title" = "Movies";
