@@ -33,6 +33,7 @@ class MovieListViewController: UIViewController, ListViewProtocol {
         let collectionView = UICollectionView(frame: .zero,
                                                    collectionViewLayout: flowLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = styleManager.backgroundColor
 
         return collectionView
     }()
@@ -93,6 +94,11 @@ class MovieListViewController: UIViewController, ListViewProtocol {
         movieListCollectionView.register(MovieCollectionViewCell.self,
                                          forCellWithReuseIdentifier: MovieCollectionViewCell.reuseIdentifier)
         movieListCollectionView.dataSource = viewHandler
+        movieListCollectionView.delegate = self
+
+        emptyView.retryHandler = { [weak self] in
+            self?.viewHandler?.loadData()
+        }
 
         viewHandler?.loadData()
     }
@@ -120,5 +126,27 @@ extension MovieListViewController {
         UIView.animate(withDuration: styleManager.defaultAnimationDuration) {
             self.emptyView.alpha = 1
         }
+    }
+}
+
+extension MovieListViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        cell.contentView.alpha = 0.7
+
+        let transformScale = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        let transformTranslate = CGAffineTransform(translationX: 0, y: 0)
+
+        cell.contentView.transform = transformScale.concatenating(transformTranslate)
+
+        collectionView.bringSubviewToFront(cell.contentView)
+        UIView.animate(withDuration: TimeInterval(styleManager.slowAnimationDuration),
+                       delay: 0, options: .allowUserInteraction, animations: {
+                        cell.contentView.alpha = 1
+                        cell.contentView.transform = .identity
+        })
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewHandler?.rowSelected(at: indexPath)
     }
 }

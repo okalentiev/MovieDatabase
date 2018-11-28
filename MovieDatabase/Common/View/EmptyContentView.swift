@@ -42,7 +42,7 @@ final class EmptyContentView: UIView {
         addSubview(label)
 
         let button = UIButton(type: .custom)
-        button.backgroundColor = styleManager.elementsColor
+        button.backgroundColor = styleManager.foregroundColor
         button.setTitle(NSLocalizedString(Constants.Localisation.EmptyView.retryButton,
                                           comment: "Retry button title"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false

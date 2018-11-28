@@ -13,7 +13,6 @@
 		49C3ED3121AF1C8C00FCD98A /* DispatchUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C3ED3021AF1C8C00FCD98A /* DispatchUtils.swift */; };
 		49C3ED3421AF1CB100FCD98A /* NetworkDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C3ED3321AF1CB100FCD98A /* NetworkDataProvider.swift */; };
 		49C3ED3721AF1CFF00FCD98A /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C3ED3621AF1CFF00FCD98A /* StyleManager.swift */; };
-		49C3ED3A21AF1D2A00FCD98A /* UIColot+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C3ED3921AF1D2A00FCD98A /* UIColot+Hex.swift */; };
 		49C3ED3C21AF1D7300FCD98A /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C3ED3B21AF1D7300FCD98A /* EmptyContentView.swift */; };
 		49C3ED3F21AF1DA500FCD98A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C3ED3E21AF1DA500FCD98A /* Constants.swift */; };
 		49C3ED4121AF1DAE00FCD98A /* Constants+Localisation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C3ED4021AF1DAE00FCD98A /* Constants+Localisation.swift */; };
@@ -64,7 +63,6 @@
 		49C3ED3021AF1C8C00FCD98A /* DispatchUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchUtils.swift; sourceTree = "<group>"; };
 		49C3ED3321AF1CB100FCD98A /* NetworkDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDataProvider.swift; sourceTree = "<group>"; };
 		49C3ED3621AF1CFF00FCD98A /* StyleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
-		49C3ED3921AF1D2A00FCD98A /* UIColot+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColot+Hex.swift"; sourceTree = "<group>"; };
 		49C3ED3B21AF1D7300FCD98A /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
 		49C3ED3E21AF1DA500FCD98A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		49C3ED4021AF1DAE00FCD98A /* Constants+Localisation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Constants+Localisation.swift"; sourceTree = "<group>"; };
@@ -196,7 +194,6 @@
 				49C3ED4721AF270100FCD98A /* CellReusable.swift */,
 				49C3ED3B21AF1D7300FCD98A /* EmptyContentView.swift */,
 				49C3ED4921AF271A00FCD98A /* ListPresentable.swift */,
-				49C3ED3921AF1D2A00FCD98A /* UIColot+Hex.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -590,7 +587,6 @@
 				49C9985521AF17DC00E852AD /* Coordinator.swift in Sources */,
 				49C9985C21AF183D00E852AD /* WindowRouter.swift in Sources */,
 				49C9982321AF139D00E852AD /* MovieListViewController.swift in Sources */,
-				49C3ED3A21AF1D2A00FCD98A /* UIColot+Hex.swift in Sources */,
 				49C3ED4F21AF318800FCD98A /* Result.swift in Sources */,
 				49C9985A21AF183400E852AD /* WindowCoordinator.swift in Sources */,
 				49C3ED3121AF1C8C00FCD98A /* DispatchUtils.swift in Sources */,

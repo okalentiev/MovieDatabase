@@ -23,6 +23,8 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
     }
 
     func loadData() {
+        view?.startLoading()
+
         movieProvider.get(url: urlBuilder.nowPlayingURL) { [weak self] (moviesResponse: Result<Movie>?, _) in
             if let movies = moviesResponse, !movies.results.isEmpty {
                 self?.moviesResult = movies

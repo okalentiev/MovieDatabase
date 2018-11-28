@@ -30,6 +30,8 @@ final class WindowCoordinator: NSObject, WindowCoordinatorType {
         addChild(tabCoordinator)
         tabCoordinator.start()
 
+        styleManager.configureAppearance()
+
         router.setRootModule(tabCoordinator)
     }
 
