@@ -7,12 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		49C3ED2D21AF1B8100FCD98A /* MovieListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C3ED2C21AF1B8100FCD98A /* MovieListCoordinator.swift */; };
 		49C9982121AF139D00E852AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9982021AF139D00E852AD /* AppDelegate.swift */; };
 		49C9982321AF139D00E852AD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9982221AF139D00E852AD /* ViewController.swift */; };
 		49C9982821AF139F00E852AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C9982721AF139F00E852AD /* Assets.xcassets */; };
 		49C9982B21AF139F00E852AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49C9982921AF139F00E852AD /* LaunchScreen.storyboard */; };
 		49C9983621AF139F00E852AD /* MovieDatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9983521AF139F00E852AD /* MovieDatabaseTests.swift */; };
 		49C9984121AF139F00E852AD /* MovieDatabaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9984021AF139F00E852AD /* MovieDatabaseUITests.swift */; };
+		49C9985321AF17D000E852AD /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9985221AF17D000E852AD /* Router.swift */; };
+		49C9985521AF17DC00E852AD /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9985421AF17DC00E852AD /* Coordinator.swift */; };
+		49C9985721AF17E900E852AD /* Presentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9985621AF17E900E852AD /* Presentable.swift */; };
+		49C9985A21AF183400E852AD /* WindowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9985921AF183400E852AD /* WindowCoordinator.swift */; };
+		49C9985C21AF183D00E852AD /* WindowRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9985B21AF183D00E852AD /* WindowRouter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		49C3ED2C21AF1B8100FCD98A /* MovieListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListCoordinator.swift; sourceTree = "<group>"; };
 		49C9981D21AF139D00E852AD /* MovieDatabase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieDatabase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49C9982021AF139D00E852AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49C9982221AF139D00E852AD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -45,6 +52,11 @@
 		49C9983C21AF139F00E852AD /* MovieDatabaseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieDatabaseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49C9984021AF139F00E852AD /* MovieDatabaseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDatabaseUITests.swift; sourceTree = "<group>"; };
 		49C9984221AF139F00E852AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49C9985221AF17D000E852AD /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		49C9985421AF17DC00E852AD /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		49C9985621AF17E900E852AD /* Presentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Presentable.swift; sourceTree = "<group>"; };
+		49C9985921AF183400E852AD /* WindowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCoordinator.swift; sourceTree = "<group>"; };
+		49C9985B21AF183D00E852AD /* WindowRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowRouter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +84,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		49C3ED2A21AF1B5500FCD98A /* List */ = {
+			isa = PBXGroup;
+			children = (
+				49C3ED2C21AF1B8100FCD98A /* MovieListCoordinator.swift */,
+				49C3ED2B21AF1B6000FCD98A /* View */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
+		49C3ED2B21AF1B6000FCD98A /* View */ = {
+			isa = PBXGroup;
+			children = (
+				49C9982221AF139D00E852AD /* ViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		49C9981421AF139D00E852AD = {
 			isa = PBXGroup;
 			children = (
@@ -134,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				49C9982021AF139D00E852AD /* AppDelegate.swift */,
+				49C9985121AF17BF00E852AD /* Modules */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -141,9 +171,29 @@
 		49C9985021AF14B600E852AD /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				49C9982221AF139D00E852AD /* ViewController.swift */,
+				49C3ED2A21AF1B5500FCD98A /* List */,
+				49C9985821AF182B00E852AD /* App */,
 			);
 			path = Modules;
+			sourceTree = "<group>";
+		};
+		49C9985121AF17BF00E852AD /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				49C9985421AF17DC00E852AD /* Coordinator.swift */,
+				49C9985621AF17E900E852AD /* Presentable.swift */,
+				49C9985221AF17D000E852AD /* Router.swift */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		49C9985821AF182B00E852AD /* App */ = {
+			isa = PBXGroup;
+			children = (
+				49C9985921AF183400E852AD /* WindowCoordinator.swift */,
+				49C9985B21AF183D00E852AD /* WindowRouter.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -156,6 +206,7 @@
 				49C9981921AF139D00E852AD /* Sources */,
 				49C9981A21AF139D00E852AD /* Frameworks */,
 				49C9981B21AF139D00E852AD /* Resources */,
+				49C9985F21AF1A7900E852AD /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -271,12 +322,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		49C9985F21AF1A7900E852AD /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		49C9981921AF139D00E852AD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49C9985521AF17DC00E852AD /* Coordinator.swift in Sources */,
+				49C9985C21AF183D00E852AD /* WindowRouter.swift in Sources */,
 				49C9982321AF139D00E852AD /* ViewController.swift in Sources */,
+				49C9985A21AF183400E852AD /* WindowCoordinator.swift in Sources */,
+				49C9985321AF17D000E852AD /* Router.swift in Sources */,
+				49C3ED2D21AF1B8100FCD98A /* MovieListCoordinator.swift in Sources */,
+				49C9985721AF17E900E852AD /* Presentable.swift in Sources */,
 				49C9982121AF139D00E852AD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
