@@ -16,6 +16,8 @@ struct Constants {
         static let version = "/3"
         static let apiKey = "da0c0e40fa23a956aec2d5aa48032b32"
 
+        static let imageBaseUrlString = "https://image.tmdb.org/t/p/"
+
         struct Endpoints {
             struct Movie {
                 static let root = "/movie"

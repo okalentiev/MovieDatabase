@@ -16,6 +16,7 @@ protocol ListViewHandlerProtocol {
 
 protocol ListViewProtocol: class {
     var cellIdentifier: String { get }
+    var cellWidth: CGFloat { get }
 
     func startLoading()
     func stopLoading()

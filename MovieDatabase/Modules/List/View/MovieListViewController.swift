@@ -9,16 +9,47 @@
 import UIKit
 
 class MovieListViewController: UIViewController, ListViewProtocol {
-    var cellIdentifier: String = UICollectionViewCell.reuseIdentifier
+    private static let cellSizeDimensionMultiplier: CGFloat = 1.5
 
-    fileprivate var movieListCollectionView: UICollectionView!
-    fileprivate var emptyView: EmptyContentView!
-
-    fileprivate var viewHandler: CollectionListViewHandlerProtocol?
+    var cellIdentifier: String = MovieCollectionViewCell.reuseIdentifier
+    var cellWidth: CGFloat {
+        let screenWidth = UIScreen.main.bounds.width
+        return screenWidth / CGFloat(numberOfColumns)
+    }
 
     private var numberOfColumns: Int {
         return UIDevice.current.orientation == .portrait ? 2 : 4
     }
+
+    fileprivate var viewHandler: CollectionListViewHandlerProtocol?
+
+    fileprivate lazy var movieListCollectionView: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.itemSize = CGSize(width: cellWidth,
+                                     height: cellWidth * MovieListViewController.cellSizeDimensionMultiplier)
+        flowLayout.minimumInteritemSpacing = 0
+        flowLayout.minimumLineSpacing = 0
+
+        let collectionView = UICollectionView(frame: .zero,
+                                                   collectionViewLayout: flowLayout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+
+        return collectionView
+    }()
+
+    fileprivate let emptyView: EmptyContentView = {
+        let view = EmptyContentView(frame: .zero)
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    fileprivate let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .whiteLarge)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
 
     convenience init(viewHandler: CollectionListViewHandlerProtocol) {
         self.init(nibName: nil, bundle: nil)
@@ -29,24 +60,26 @@ class MovieListViewController: UIViewController, ListViewProtocol {
         view = UIView(frame: UIScreen.main.bounds)
 
         // Collection view
-        let screenWidth = view.bounds.width
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.itemSize = CGSize(width: screenWidth/CGFloat(numberOfColumns),
-                                     height: screenWidth/CGFloat(numberOfColumns))
-        flowLayout.minimumInteritemSpacing = 0
-        flowLayout.minimumLineSpacing = 0
-
-        movieListCollectionView = UICollectionView(frame: view.bounds,
-                                                   collectionViewLayout: flowLayout)
-        movieListCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        movieListCollectionView.dataSource = viewHandler
         view.addSubview(movieListCollectionView)
-
         NSLayoutConstraint.activate([
             movieListCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
             movieListCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             movieListCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             movieListCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+
+        // Error view
+        view.addSubview(emptyView)
+        NSLayoutConstraint.activate([
+            emptyView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            ])
+
+        // Activity indicator
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
     }
 
@@ -57,8 +90,9 @@ class MovieListViewController: UIViewController, ListViewProtocol {
 
         title = NSLocalizedString(Constants.Localisation.Movies.title, comment: "Movies")
 
-        movieListCollectionView.register(UICollectionViewCell.self,
-                                         forCellWithReuseIdentifier: UICollectionViewCell.reuseIdentifier)
+        movieListCollectionView.register(MovieCollectionViewCell.self,
+                                         forCellWithReuseIdentifier: MovieCollectionViewCell.reuseIdentifier)
+        movieListCollectionView.dataSource = viewHandler
 
         viewHandler?.loadData()
     }
@@ -67,10 +101,12 @@ class MovieListViewController: UIViewController, ListViewProtocol {
 extension MovieListViewController {
     func startLoading() {
         movieListCollectionView.isUserInteractionEnabled = false
+        activityIndicator.startAnimating()
     }
 
     func stopLoading() {
         movieListCollectionView.isUserInteractionEnabled = true
+        activityIndicator.stopAnimating()
     }
 
     func reloadList() {

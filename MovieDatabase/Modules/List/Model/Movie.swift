@@ -11,8 +11,8 @@ import Foundation
 struct Movie: Codable {
     let movieId: Int
     let title: String
-    let posterPath: URL
-    let backdropPath: URL
+    let posterPath: String
+    let backdropPath: String
     let overview: String
 
     private enum CodingKeys: String, CodingKey {

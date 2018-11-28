@@ -53,15 +53,17 @@ extension MovieListViewModel {
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cellIdentifier = view?.cellIdentifier,
-            let movie = moviesResult?.results[indexPath.section] else {
+        guard let listView = view,
+            let movie = moviesResult?.results[indexPath.row],
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: listView.cellIdentifier,
+                                                          for: indexPath) as? MovieCollectionViewCellType else {
             fatalError("Cannon load movie cell identifier")
         }
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier,
-                                                      for: indexPath)
-
-        cell.backgroundColor = (indexPath.row % 2) == 0 ? UIColor.red : UIColor.green
+        let movieViewModel = MovieCellViewModel(movie: movie,
+                                                urlBuilder: urlBuilder,
+                                                cellWidth: listView.cellWidth)
+        movieViewModel.view = cell
 
         return cell
     }

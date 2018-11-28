@@ -11,6 +11,7 @@ import UIKit
 
 final class EmptyContentView: UIView {
     private static let buttonHeight: CGFloat = 50.0
+    private static let spacing: CGFloat = 15.0
 
     private var actionButton: UIButton?
 
@@ -54,7 +55,7 @@ final class EmptyContentView: UIView {
             label.topAnchor.constraint(equalTo: topAnchor),
             label.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             label.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            label.bottomAnchor.constraint(equalTo: button.topAnchor),
+            button.topAnchor.constraint(equalTo: label.bottomAnchor, constant: EmptyContentView.spacing),
             button.trailingAnchor.constraint(equalTo: trailingAnchor),
             button.bottomAnchor.constraint(equalTo: bottomAnchor),
             button.leadingAnchor.constraint(equalTo: leadingAnchor),
