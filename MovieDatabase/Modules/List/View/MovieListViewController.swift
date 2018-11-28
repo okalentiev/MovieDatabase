@@ -16,6 +16,10 @@ class MovieListViewController: UIViewController, ListViewProtocol {
 
     fileprivate var viewHandler: CollectionListViewHandlerProtocol?
 
+    private var numberOfColumns: Int {
+        return UIDevice.current.orientation == .portrait ? 2 : 4
+    }
+
     convenience init(viewHandler: CollectionListViewHandlerProtocol) {
         self.init(nibName: nil, bundle: nil)
         self.viewHandler = viewHandler
@@ -27,7 +31,8 @@ class MovieListViewController: UIViewController, ListViewProtocol {
         // Collection view
         let screenWidth = view.bounds.width
         let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.itemSize = CGSize(width: screenWidth/2, height: screenWidth/2)
+        flowLayout.itemSize = CGSize(width: screenWidth/CGFloat(numberOfColumns),
+                                     height: screenWidth/CGFloat(numberOfColumns))
         flowLayout.minimumInteritemSpacing = 0
         flowLayout.minimumLineSpacing = 0
 

@@ -11,7 +11,12 @@ import Foundation
 final class MovieListCoordinator: Coordinator {
 
     private lazy var listViewController: MovieListViewController = {
-        let viewModel = MovieListViewModel()
+        let movieProvider = NetworkDataProvider(urlSession: URLSession.shared,
+                                                jsonDecoder: JSONDecoder())
+        let urlBuilder = TheMovieDBUrlBuilder()
+
+        let viewModel = MovieListViewModel(movieProvider: movieProvider,
+                                           urlBuilder: urlBuilder)
         let viewController = MovieListViewController(viewHandler: viewModel)
         viewModel.view = viewController
 
