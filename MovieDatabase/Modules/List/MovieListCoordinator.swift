@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol MovieListCoordinatorDelelegate: class {
+    func movieSelected(movie: Movie)
+}
+
 final class MovieListCoordinator: Coordinator {
 
     private lazy var listViewController: MovieListViewController = {
@@ -19,6 +23,7 @@ final class MovieListCoordinator: Coordinator {
                                            urlBuilder: urlBuilder)
         let viewController = MovieListViewController(viewHandler: viewModel)
         viewModel.view = viewController
+        viewModel.delegate = self
 
         return viewController
     }()
@@ -26,5 +31,18 @@ final class MovieListCoordinator: Coordinator {
     override init(router: RouterType) {
         super.init(router: router)
         router.setRootModule(listViewController, hideBar: false)
+    }
+}
+
+extension MovieListCoordinator: MovieListCoordinatorDelelegate {
+    func movieSelected(movie: Movie) {
+        let coordinator = MovieCoordinator(router: router, movie: movie)
+
+        addChild(coordinator)
+        coordinator.start()
+
+        router.push(coordinator, animated: true) { [weak self, weak coordinator] in
+            self?.removeChild(coordinator)
+        }
     }
 }

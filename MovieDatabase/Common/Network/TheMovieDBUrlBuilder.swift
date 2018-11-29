@@ -12,6 +12,7 @@ import UIKit
 protocol TheMovieDBUrlBuilderProtocol {
     var nowPlayingURL: URL { get }
     func posterUrl(path: String, width: CGFloat) -> URL
+    func backdropUrl(path: String) -> URL
 }
 
 final class TheMovieDBUrlBuilder: TheMovieDBUrlBuilderProtocol {
@@ -40,7 +41,17 @@ final class TheMovieDBUrlBuilder: TheMovieDBUrlBuilderProtocol {
         guard let url = URL(string: Constants.API.imageBaseUrlString)?
             .appendingPathComponent("w\(posterWidth)")
             .appendingPathComponent(path) else {
-                fatalError("Could not construct nowPlayingURL")
+                fatalError("Could not construct posterUrl")
+        }
+
+        return url
+    }
+
+    func backdropUrl(path: String) -> URL {
+        guard let url = URL(string: Constants.API.imageBaseUrlString)?
+            .appendingPathComponent("original")
+            .appendingPathComponent(path) else {
+                fatalError("Could not construct backdropUrl")
         }
 
         return url

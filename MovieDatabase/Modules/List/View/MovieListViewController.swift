@@ -63,24 +63,24 @@ class MovieListViewController: UIViewController, ListViewProtocol {
         // Collection view
         view.addSubview(movieListCollectionView)
         NSLayoutConstraint.activate([
-            movieListCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            movieListCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            movieListCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            movieListCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            movieListCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            movieListCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            movieListCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            movieListCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
             ])
 
         // Error view
         view.addSubview(emptyView)
         NSLayoutConstraint.activate([
-            emptyView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            emptyView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            emptyView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
             ])
 
         // Activity indicator
         view.addSubview(activityIndicator)
         NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            activityIndicator.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
             ])
     }
 

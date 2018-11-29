@@ -34,7 +34,7 @@ final class DefaultStyleManager: StyleManagerProtocol {
     }
 
     var titleFont: UIFont {
-        return UIFont.preferredFont(forTextStyle: .title2)
+        return UIFont.preferredFont(forTextStyle: .title3)
     }
 
     var largeTitleFont: UIFont {

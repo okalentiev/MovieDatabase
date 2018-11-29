@@ -11,6 +11,7 @@ import UIKit
 
 final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
     weak var view: ListViewProtocol?
+    weak var delegate: MovieListCoordinatorDelelegate?
 
     private let movieProvider: NetworkDataProvider
     private let urlBuilder: TheMovieDBUrlBuilderProtocol
@@ -44,7 +45,9 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
     }
 
     func rowSelected(at indexPath: IndexPath) {
-
+        if let movie = moviesResult?.results[indexPath.row] {
+            delegate?.movieSelected(movie: movie)
+        }
     }
 }
 
@@ -59,7 +62,7 @@ extension MovieListViewModel {
             let movie = moviesResult?.results[indexPath.row],
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: listView.cellIdentifier,
                                                           for: indexPath) as? MovieCollectionViewCellType else {
-            fatalError("Cannon load movie cell identifier")
+            fatalError("Cannot load movie cell")
         }
 
         let movieViewModel = MovieCellViewModel(movie: movie,
