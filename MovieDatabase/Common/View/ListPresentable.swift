@@ -23,7 +23,7 @@ protocol ListViewProtocol: class {
     func stopLoading()
 
     func showEmptyView()
-    func reloadList()
+    func appendIndexes(_ indexes: [IndexPath])
 }
 
 protocol CollectionListViewHandlerProtocol: ListViewHandlerProtocol, UICollectionViewDataSource { }

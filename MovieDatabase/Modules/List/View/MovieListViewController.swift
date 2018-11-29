@@ -122,6 +122,10 @@ extension MovieListViewController {
         movieListCollectionView.reloadData()
     }
 
+    func appendIndexes(_ indexes: [IndexPath]) {
+        movieListCollectionView.insertItems(at: indexes)
+    }
+
     func showEmptyView() {
         emptyView.alpha = 0
         emptyView.isHidden = false

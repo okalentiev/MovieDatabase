@@ -79,11 +79,16 @@ private extension MovieListViewModel {
         loading = true
         movieProvider.get(url: urlBuilder.nowPlayingURL(page: page)) { [weak self] (moviesResponse: Result<Movie>?, _) in
             if let movies = moviesResponse, !movies.results.isEmpty {
+                let lastIndex = self?.movies.count
                 self?.currentResult = movies
                 self?.movies.append(contentsOf: movies.results)
 
-                DispatchUtils.renderUI {
-                    self?.view?.reloadList()
+                if let oldLastIndex = lastIndex {
+                    let newLastIndex = oldLastIndex + movies.results.count
+                    let indexes = (oldLastIndex..<newLastIndex).map { IndexPath(row: $0, section: 0) }
+                    DispatchUtils.renderUI {
+                        self?.view?.appendIndexes(indexes)
+                    }
                 }
             } else {
                 DispatchUtils.renderUI {
