@@ -12,6 +12,7 @@ import UIKit
 protocol ListViewHandlerProtocol {
     func loadData()
     func searchEntered(_ searchString: String)
+    func clearSearch()
     func cellWillDisplay(indexPath: IndexPath)
     func rowSelected(at indexPath: IndexPath)
 }
@@ -23,7 +24,7 @@ protocol ListViewProtocol: class {
     func startLoading()
     func stopLoading()
 
-    func showEmptyView()
+    func showEmptyView(allowRetry: Bool)
     func reloadList()
     func appendIndexes(_ indexes: [IndexPath])
 }

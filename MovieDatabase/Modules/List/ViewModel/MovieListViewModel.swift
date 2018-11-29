@@ -18,10 +18,16 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
     private let movieProvider: NetworkDataProviderProtocol
     private let urlBuilder: TheMovieDBUrlBuilderProtocol
 
-    fileprivate var currentResult: Result<Movie>?
-    fileprivate var movies: [Movie] = []
+    fileprivate var moviesData = MoviesData()
+    fileprivate var searchData = MoviesData()
+
+    fileprivate var currentData: MoviesData {
+        return searchString != nil ? searchData : moviesData
+    }
 
     fileprivate var loading = false
+    fileprivate var searchString: String?
+    fileprivate var searchDelayTimer: DispatchWorkItem?
 
     init(movieProvider: NetworkDataProviderProtocol, urlBuilder: TheMovieDBUrlBuilderProtocol) {
         self.movieProvider = movieProvider
@@ -35,29 +41,55 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
 
     func cellWillDisplay(indexPath: IndexPath) {
         guard loading == false,
-            let result = currentResult,
+            let result = currentData.currentResult,
             result.page < result.totalPages else {
             return
         }
 
-        if indexPath.row >= Int(MovieListViewModel.paginationTrigerPercentage * Double(movies.count)) {
-            loadMovies(page: result.page + 1)
+        if indexPath.row >= Int(MovieListViewModel.paginationTrigerPercentage * Double(currentData.movies.count)) {
+            if let search = searchString {
+
+            } else {
+                loadMovies(page: result.page + 1)
+            }
         }
     }
 
     func rowSelected(at indexPath: IndexPath) {
-        delegate?.movieSelected(movie: movies[indexPath.row])
+        delegate?.movieSelected(movie: currentData.movies[indexPath.row])
     }
 
     func searchEntered(_ searchString: String) {
-        movies.removeAll()
-        performReques(url: urlBuilder.search(query: searchString))
+        guard !searchString.isEmpty else {
+            return
+        }
+        self.searchString = searchString
+        self.searchDelayTimer?.cancel()
+
+        let searchDelayTimer = DispatchWorkItem { [weak self] in
+            if let url = self?.urlBuilder.search(query: searchString) {
+                self?.currentData.movies.removeAll()
+                self?.view?.reloadList()
+                self?.view?.startLoading()
+                self?.performReques(url: url)
+            }
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: searchDelayTimer)
+
+        self.searchDelayTimer = searchDelayTimer
+    }
+
+    func clearSearch() {
+        searchDelayTimer?.cancel()
+        searchString = nil
+        view?.reloadList()
     }
 }
 
 extension MovieListViewModel {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return movies.count
+        return currentData.movies.count
     }
 
     func collectionView(_ collectionView: UICollectionView,
@@ -68,7 +100,7 @@ extension MovieListViewModel {
             fatalError("Cannot load movie cell")
         }
 
-        let movie = movies[indexPath.row]
+        let movie = currentData.movies[indexPath.row]
         let movieViewModel = MovieCellViewModel(movie: movie,
                                                 urlBuilder: urlBuilder,
                                                 cellWidth: listView.cellWidth)
@@ -91,7 +123,7 @@ private extension MovieListViewModel {
                 self?.handleResponse(movies)
             } else {
                 DispatchUtils.renderUI {
-                    self?.view?.showEmptyView()
+                    self?.view?.showEmptyView(allowRetry: self?.searchString == nil)
                 }
             }
             DispatchUtils.renderUI {
@@ -102,9 +134,9 @@ private extension MovieListViewModel {
     }
 
     func handleResponse(_ moviesResponse: Result<Movie>) {
-        let oldLastIndex = movies.count
-        currentResult = moviesResponse
-        movies.append(contentsOf: moviesResponse.results)
+        let oldLastIndex = currentData.movies.count
+        currentData.currentResult = moviesResponse
+        currentData.movies.append(contentsOf: moviesResponse.results)
 
         if oldLastIndex == 0 {
             DispatchUtils.renderUI {

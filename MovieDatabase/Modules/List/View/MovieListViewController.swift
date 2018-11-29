@@ -110,6 +110,7 @@ class MovieListViewController: UIViewController, ListViewProtocol {
         search.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = search
         navigationItem.searchController?.searchBar.tintColor = styleManager.textColor
+        navigationItem.searchController?.searchBar.delegate = self
 
         title = NSLocalizedString(Constants.Localisation.Movies.title, comment: "Movies")
     }
@@ -142,9 +143,10 @@ extension MovieListViewController {
         movieListCollectionView.reloadData()
     }
 
-    func showEmptyView() {
+    func showEmptyView(allowRetry: Bool) {
         emptyView.alpha = 0
         emptyView.isHidden = false
+        emptyView.buttonHidden = !allowRetry
 
         UIView.animate(withDuration: styleManager.defaultAnimationDuration) {
             self.emptyView.alpha = 1
@@ -176,10 +178,22 @@ extension MovieListViewController: UICollectionViewDelegate {
     }
 }
 
-extension MovieListViewController: UISearchResultsUpdating {
+extension MovieListViewController: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         if let searchString = searchController.searchBar.text, !searchString.isEmpty {
             viewHandler?.searchEntered(searchString)
+        }
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        emptyView.isHidden = true
+        viewHandler?.clearSearch()
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            emptyView.isHidden = true
+            viewHandler?.clearSearch()
         }
     }
 }
