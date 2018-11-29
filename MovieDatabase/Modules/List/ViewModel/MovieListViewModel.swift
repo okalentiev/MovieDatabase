@@ -13,22 +13,74 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
     weak var view: ListViewProtocol?
     weak var delegate: MovieListCoordinatorDelelegate?
 
-    private let movieProvider: NetworkDataProvider
+    private static let paginationTrigerPercentage = 0.8
+
+    private let movieProvider: NetworkDataProviderProtocol
     private let urlBuilder: TheMovieDBUrlBuilderProtocol
 
-    fileprivate var moviesResult: Result<Movie>?
+    fileprivate var currentResult: Result<Movie>?
+    fileprivate var movies: [Movie] = []
 
-    init(movieProvider: NetworkDataProvider, urlBuilder: TheMovieDBUrlBuilderProtocol) {
+    fileprivate var loading = false
+
+    init(movieProvider: NetworkDataProviderProtocol, urlBuilder: TheMovieDBUrlBuilderProtocol) {
         self.movieProvider = movieProvider
         self.urlBuilder = urlBuilder
     }
 
     func loadData() {
         view?.startLoading()
+        loadMovies(page: 1)
+    }
 
-        movieProvider.get(url: urlBuilder.nowPlayingURL) { [weak self] (moviesResponse: Result<Movie>?, _) in
+    func cellWillDisplay(indexPath: IndexPath) {
+        guard loading == false,
+            let result = currentResult,
+            result.page < result.totalPages else {
+            return
+        }
+
+        if indexPath.row >= Int(MovieListViewModel.paginationTrigerPercentage * Double(movies.count)) {
+            loadMovies(page: result.page + 1)
+        }
+    }
+
+    func rowSelected(at indexPath: IndexPath) {
+        delegate?.movieSelected(movie: movies[indexPath.row])
+    }
+}
+
+extension MovieListViewModel {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return movies.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let listView = view,
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: listView.cellIdentifier,
+                                                          for: indexPath) as? MovieCollectionViewCellType else {
+            fatalError("Cannot load movie cell")
+        }
+
+        let movie = movies[indexPath.row]
+        let movieViewModel = MovieCellViewModel(movie: movie,
+                                                urlBuilder: urlBuilder,
+                                                cellWidth: listView.cellWidth)
+        movieViewModel.view = cell
+
+        return cell
+    }
+}
+
+// MARK: Helpers
+private extension MovieListViewModel {
+    func loadMovies(page: Int) {
+        loading = true
+        movieProvider.get(url: urlBuilder.nowPlayingURL(page: page)) { [weak self] (moviesResponse: Result<Movie>?, _) in
             if let movies = moviesResponse, !movies.results.isEmpty {
-                self?.moviesResult = movies
+                self?.currentResult = movies
+                self?.movies.append(contentsOf: movies.results)
 
                 DispatchUtils.renderUI {
                     self?.view?.reloadList()
@@ -41,35 +93,7 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
             DispatchUtils.renderUI {
                 self?.view?.stopLoading()
             }
+            self?.loading = false
         }
-    }
-
-    func rowSelected(at indexPath: IndexPath) {
-        if let movie = moviesResult?.results[indexPath.row] {
-            delegate?.movieSelected(movie: movie)
-        }
-    }
-}
-
-extension MovieListViewModel {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return moviesResult?.results.count ?? 0
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let listView = view,
-            let movie = moviesResult?.results[indexPath.row],
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: listView.cellIdentifier,
-                                                          for: indexPath) as? MovieCollectionViewCellType else {
-            fatalError("Cannot load movie cell")
-        }
-
-        let movieViewModel = MovieCellViewModel(movie: movie,
-                                                urlBuilder: urlBuilder,
-                                                cellWidth: listView.cellWidth)
-        movieViewModel.view = cell
-
-        return cell
     }
 }

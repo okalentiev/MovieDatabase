@@ -11,6 +11,7 @@ import UIKit
 
 protocol ListViewHandlerProtocol {
     func loadData()
+    func cellWillDisplay(indexPath: IndexPath)
     func rowSelected(at indexPath: IndexPath)
 }
 

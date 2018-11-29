@@ -16,8 +16,10 @@ final class MovieCellViewModel {
 
     weak var view: MovieCollectionViewCellProtocol? {
         didSet {
-            view?.loadImage(url: urlBuilder.posterUrl(path: movie.posterPath,
-                                                      width: cellWidth))
+            if let posterPath = movie.posterPath {
+                view?.loadImage(url: urlBuilder.posterUrl(path: posterPath,
+                                                          width: cellWidth))
+            }
         }
     }
 
