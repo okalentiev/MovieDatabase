@@ -122,6 +122,10 @@ extension MovieListViewController {
         movieListCollectionView.reloadData()
     }
 
+    func appendIndexes(_ indexes: [IndexPath]) {
+        movieListCollectionView.insertItems(at: indexes)
+    }
+
     func showEmptyView() {
         emptyView.alpha = 0
         emptyView.isHidden = false
@@ -134,6 +138,8 @@ extension MovieListViewController {
 
 extension MovieListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        viewHandler?.cellWillDisplay(indexPath: indexPath)
+
         cell.contentView.alpha = 0.7
 
         let transformScale = CGAffineTransform(scaleX: 0.6, y: 0.6)

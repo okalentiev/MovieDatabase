@@ -24,7 +24,12 @@ final class MovieViewModel: MovieViewHandlerProtocol {
     }
 
     func loadData() {
-        view?.loadBackdropImage(url: urlBuilder.backdropUrl(path: movie.backdropPath))
+        if let backdropPath = movie.backdropPath {
+            view?.loadBackdropImage(url: urlBuilder.backdropUrl(path: backdropPath))
+        } else {
+            view?.removeBackdropImage()
+        }
+
         view?.loadTitle(title: movie.title)
         view?.loadOverview(overview: movie.overview)
     }

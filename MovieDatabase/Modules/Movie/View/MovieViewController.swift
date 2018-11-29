@@ -11,6 +11,7 @@ import UIKit
 
 protocol MovieViewProtocol: class {
     func loadBackdropImage(url: URL)
+    func removeBackdropImage()
     func loadTitle(title: String)
     func loadOverview(overview: String)
 }
@@ -127,6 +128,10 @@ final class MovieViewController: UIViewController {
 extension MovieViewController: MovieViewProtocol {
     func loadBackdropImage(url: URL) {
         backdropImageView.kf.setImage(with: url, options: [.transition(.fade(styleManager.defaultAnimationDuration))])
+    }
+
+    func removeBackdropImage() {
+        stackView.removeArrangedSubview(backdropImageView)
     }
 
     func loadTitle(title: String) {

@@ -10,13 +10,13 @@ import Foundation
 import UIKit
 
 protocol TheMovieDBUrlBuilderProtocol {
-    var nowPlayingURL: URL { get }
+    func nowPlayingURL(page: Int) -> URL
     func posterUrl(path: String, width: CGFloat) -> URL
     func backdropUrl(path: String) -> URL
 }
 
 final class TheMovieDBUrlBuilder: TheMovieDBUrlBuilderProtocol {
-    var nowPlayingURL: URL {
+    func nowPlayingURL(page: Int) -> URL {
         guard let url = URL(string: Constants.API.baseUrlString)?
             .appendingPathComponent(Constants.API.version)
             .appendingPathComponent(Constants.API.Endpoints.Movie.nowPlaying) else {
@@ -24,9 +24,11 @@ final class TheMovieDBUrlBuilder: TheMovieDBUrlBuilderProtocol {
         }
 
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        let query = URLQueryItem(name: Constants.API.DefaultParameters.apiKey,
+        let apiKeyQuery = URLQueryItem(name: Constants.API.DefaultParameters.apiKey,
                                  value: Constants.API.apiKey)
-        urlComponents?.queryItems = [query]
+        let pageQery = URLQueryItem(name: Constants.API.DefaultParameters.page,
+                                    value: "\(page)")
+        urlComponents?.queryItems = [apiKeyQuery, pageQery]
 
         guard let nowPlayingURL = urlComponents?.url else {
             fatalError("Could not construct nowPlayingURL")
