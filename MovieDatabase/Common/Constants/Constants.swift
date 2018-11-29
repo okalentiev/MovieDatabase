@@ -23,11 +23,17 @@ struct Constants {
                 static let root = "/movie"
                 static let nowPlaying = Constants.API.Endpoints.Movie.root + "/now_playing"
             }
+
+            struct Search {
+                static let root = "/search"
+                static let movie = Constants.API.Endpoints.Search.root + "/movie"
+            }
         }
 
         struct DefaultParameters {
             static let apiKey = "api_key"
             static let page = "page"
+            static let query = "query"
         }
     }
 }

@@ -37,6 +37,7 @@ class MovieListViewController: UIViewController, ListViewProtocol {
                                                    collectionViewLayout: flowLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = styleManager.backgroundColor
+        collectionView.keyboardDismissMode = .onDrag
 
         return collectionView
     }()
@@ -89,15 +90,9 @@ class MovieListViewController: UIViewController, ListViewProtocol {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationItem.largeTitleDisplayMode = .never
-
-        title = NSLocalizedString(Constants.Localisation.Movies.title, comment: "Movies")
-
-        movieListCollectionView.register(MovieCollectionViewCell.self,
-                                         forCellWithReuseIdentifier: MovieCollectionViewCell.reuseIdentifier)
-        movieListCollectionView.dataSource = viewHandler
-        movieListCollectionView.delegate = self
+        definesPresentationContext = true
+        navigationBarConfiguration()
+        collectionViewConfiguration()
 
         emptyView.retryHandler = { [weak self] in
             self?.viewHandler?.loadData()
@@ -105,10 +100,31 @@ class MovieListViewController: UIViewController, ListViewProtocol {
 
         viewHandler?.loadData()
     }
+
+    private func navigationBarConfiguration() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationItem.largeTitleDisplayMode = .never
+
+        let search = UISearchController(searchResultsController: nil)
+        search.searchResultsUpdater = self
+        search.obscuresBackgroundDuringPresentation = false
+        navigationItem.searchController = search
+        navigationItem.searchController?.searchBar.tintColor = styleManager.textColor
+
+        title = NSLocalizedString(Constants.Localisation.Movies.title, comment: "Movies")
+    }
+
+    private func collectionViewConfiguration() {
+        movieListCollectionView.register(MovieCollectionViewCell.self,
+                                         forCellWithReuseIdentifier: cellIdentifier)
+        movieListCollectionView.dataSource = viewHandler
+        movieListCollectionView.delegate = self
+    }
 }
 
 extension MovieListViewController {
     func startLoading() {
+        emptyView.isHidden = true
         movieListCollectionView.isUserInteractionEnabled = false
         activityIndicator.startAnimating()
     }
@@ -118,12 +134,12 @@ extension MovieListViewController {
         activityIndicator.stopAnimating()
     }
 
-    func reloadList() {
-        movieListCollectionView.reloadData()
-    }
-
     func appendIndexes(_ indexes: [IndexPath]) {
         movieListCollectionView.insertItems(at: indexes)
+    }
+
+    func reloadList() {
+        movieListCollectionView.reloadData()
     }
 
     func showEmptyView() {
@@ -157,5 +173,13 @@ extension MovieListViewController: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewHandler?.rowSelected(at: indexPath)
+    }
+}
+
+extension MovieListViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchString = searchController.searchBar.text, !searchString.isEmpty {
+            viewHandler?.searchEntered(searchString)
+        }
     }
 }

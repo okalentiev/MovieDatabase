@@ -48,6 +48,11 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
     func rowSelected(at indexPath: IndexPath) {
         delegate?.movieSelected(movie: movies[indexPath.row])
     }
+
+    func searchEntered(_ searchString: String) {
+        movies.removeAll()
+        performReques(url: urlBuilder.search(query: searchString))
+    }
 }
 
 extension MovieListViewModel {
@@ -76,20 +81,14 @@ extension MovieListViewModel {
 // MARK: Helpers
 private extension MovieListViewModel {
     func loadMovies(page: Int) {
-        loading = true
-        movieProvider.get(url: urlBuilder.nowPlayingURL(page: page)) { [weak self] (moviesResponse: Result<Movie>?, _) in
-            if let movies = moviesResponse, !movies.results.isEmpty {
-                let lastIndex = self?.movies.count
-                self?.currentResult = movies
-                self?.movies.append(contentsOf: movies.results)
+        performReques(url: urlBuilder.nowPlaying(page: page))
+    }
 
-                if let oldLastIndex = lastIndex {
-                    let newLastIndex = oldLastIndex + movies.results.count
-                    let indexes = (oldLastIndex..<newLastIndex).map { IndexPath(row: $0, section: 0) }
-                    DispatchUtils.renderUI {
-                        self?.view?.appendIndexes(indexes)
-                    }
-                }
+    func performReques(url: URL) {
+        loading = true
+        movieProvider.get(url: url) { [weak self] (moviesResponse: Result<Movie>?, _) in
+            if let movies = moviesResponse, !movies.results.isEmpty {
+                self?.handleResponse(movies)
             } else {
                 DispatchUtils.renderUI {
                     self?.view?.showEmptyView()
@@ -99,6 +98,24 @@ private extension MovieListViewModel {
                 self?.view?.stopLoading()
             }
             self?.loading = false
+        }
+    }
+
+    func handleResponse(_ moviesResponse: Result<Movie>) {
+        let oldLastIndex = movies.count
+        currentResult = moviesResponse
+        movies.append(contentsOf: moviesResponse.results)
+
+        if oldLastIndex == 0 {
+            DispatchUtils.renderUI {
+                self.view?.reloadList()
+            }
+        } else {
+            let newLastIndex = oldLastIndex + moviesResponse.results.count
+            let indexes = (oldLastIndex..<newLastIndex).map { IndexPath(row: $0, section: 0) }
+            DispatchUtils.renderUI {
+                self.view?.appendIndexes(indexes)
+            }
         }
     }
 }

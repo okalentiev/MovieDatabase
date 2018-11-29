@@ -66,5 +66,6 @@ final class DefaultStyleManager: StyleManagerProtocol {
         UINavigationBar.appearance().tintColor = textColor
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
         UINavigationBar.appearance().largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
     }
 }
