@@ -48,7 +48,7 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
 
         if indexPath.row >= Int(MovieListViewModel.paginationTrigerPercentage * Double(currentData.movies.count)) {
             if let search = searchString {
-
+                searchMovies(searchString: search, page: result.page + 1)
             } else {
                 loadMovies(page: result.page + 1)
             }
@@ -60,19 +60,18 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
     }
 
     func searchEntered(_ searchString: String) {
-        guard !searchString.isEmpty else {
+        guard !searchString.isEmpty,
+            searchString != self.searchString else {
             return
         }
         self.searchString = searchString
         self.searchDelayTimer?.cancel()
 
         let searchDelayTimer = DispatchWorkItem { [weak self] in
-            if let url = self?.urlBuilder.search(query: searchString) {
-                self?.currentData.movies.removeAll()
-                self?.view?.reloadList()
-                self?.view?.startLoading()
-                self?.performReques(url: url)
-            }
+            self?.currentData.movies.removeAll()
+            self?.view?.reloadList()
+            self?.view?.startLoading()
+            self?.searchMovies(searchString: searchString, page: 1)
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: searchDelayTimer)
@@ -114,6 +113,10 @@ extension MovieListViewModel {
 private extension MovieListViewModel {
     func loadMovies(page: Int) {
         performReques(url: urlBuilder.nowPlaying(page: page))
+    }
+
+    func searchMovies(searchString: String, page: Int) {
+        performReques(url: urlBuilder.search(query: searchString, page: page))
     }
 
     func performReques(url: URL) {

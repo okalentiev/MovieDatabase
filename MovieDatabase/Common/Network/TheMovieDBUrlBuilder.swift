@@ -13,7 +13,7 @@ protocol TheMovieDBUrlBuilderProtocol {
     func nowPlaying(page: Int) -> URL
     func poster(path: String, width: CGFloat) -> URL
     func backdrop(path: String) -> URL
-    func search(query: String) -> URL
+    func search(query: String, page: Int) -> URL
 }
 
 final class TheMovieDBUrlBuilder: TheMovieDBUrlBuilderProtocol {
@@ -67,7 +67,7 @@ final class TheMovieDBUrlBuilder: TheMovieDBUrlBuilderProtocol {
         return url
     }
 
-    func search(query: String) -> URL {
+    func search(query: String, page: Int) -> URL {
         guard let url = URL(string: Constants.API.baseUrlString)?
             .appendingPathComponent(Constants.API.version)
             .appendingPathComponent(Constants.API.Endpoints.Search.movie) else {
@@ -79,7 +79,9 @@ final class TheMovieDBUrlBuilder: TheMovieDBUrlBuilderProtocol {
                                        value: Constants.API.apiKey)
         let query = URLQueryItem(name: Constants.API.DefaultParameters.query,
                                  value: query)
-        urlComponents?.queryItems = [apiKeyQuery, query]
+        let pageQuery = URLQueryItem(name: Constants.API.DefaultParameters.page,
+                                     value: "\(page)")
+        urlComponents?.queryItems = [apiKeyQuery, query, pageQuery]
 
         guard let searchUrl = urlComponents?.url else {
             fatalError("Could not construct url")

@@ -19,7 +19,7 @@ class MovieListViewController: UIViewController, ListViewProtocol {
 
     private var numberOfColumns: Int {
         if UIDevice.current.orientation != .unknown {
-            return UIDevice.current.orientation == .portrait ? 2 : 4
+            return UIDevice.current.orientation == .portrait ? 2 : 3
         }
         return 2
     }
