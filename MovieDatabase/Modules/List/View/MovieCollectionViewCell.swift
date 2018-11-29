@@ -20,6 +20,8 @@ final class MovieCollectionViewCell: MovieCollectionViewCellType {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.kf.indicatorType = .activity
+        (imageView.kf.indicator?.view as? UIActivityIndicatorView)?.color = .white
         return imageView
     }()
 
