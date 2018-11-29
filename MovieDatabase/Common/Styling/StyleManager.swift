@@ -21,11 +21,9 @@ protocol StyleManagerProtocol {
     var largeTitleFont: UIFont { get }
     var foregroundColor: UIColor { get }
     var backgroundColor: UIColor { get }
-    var elementsColor: UIColor { get }
     var textColor: UIColor { get }
-    var successColor: UIColor { get }
-    var failureColor: UIColor { get }
     var defaultAnimationDuration: TimeInterval { get }
+    var slowAnimationDuration: TimeInterval { get }
 
     func configureAppearance()
 }
@@ -36,7 +34,7 @@ final class DefaultStyleManager: StyleManagerProtocol {
     }
 
     var titleFont: UIFont {
-        return UIFont.preferredFont(forTextStyle: .title2)
+        return UIFont.preferredFont(forTextStyle: .title3)
     }
 
     var largeTitleFont: UIFont {
@@ -44,40 +42,29 @@ final class DefaultStyleManager: StyleManagerProtocol {
     }
 
     var foregroundColor: UIColor {
-        return UIColor(rgb: 0x00adb5)
+        return UIColor(red: 20.0 / 255.0, green: 20.0 / 255.0, blue: 20.0 / 255.0, alpha: 1)
     }
 
     var backgroundColor: UIColor {
-        return UIColor(rgb: 0x303841)
-    }
-
-    var elementsColor: UIColor {
-        return UIColor(rgb: 0xff5722)
+        return UIColor.black
     }
 
     var textColor: UIColor {
-        return UIColor(rgb: 0xeeeeee)
-    }
-
-    var successColor: UIColor {
-        return UIColor(rgb: 0x287D3C)
-    }
-
-    var failureColor: UIColor {
-        return UIColor(rgb: 0xcc0000)
+        return UIColor.white
     }
 
     var defaultAnimationDuration: TimeInterval {
         return 0.2
     }
 
+    var slowAnimationDuration: TimeInterval {
+        return 0.5
+    }
+
     func configureAppearance() {
-        UINavigationBar.appearance().barTintColor = elementsColor
+        UINavigationBar.appearance().barTintColor = foregroundColor
         UINavigationBar.appearance().tintColor = textColor
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
-
-        UITabBar.appearance().barTintColor = elementsColor
-        UITabBar.appearance().unselectedItemTintColor = backgroundColor
-        UITabBar.appearance().tintColor = textColor
+        UINavigationBar.appearance().largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
     }
 }
