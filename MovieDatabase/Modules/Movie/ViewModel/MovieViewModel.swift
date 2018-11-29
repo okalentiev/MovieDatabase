@@ -25,7 +25,7 @@ final class MovieViewModel: MovieViewHandlerProtocol {
 
     func loadData() {
         if let backdropPath = movie.backdropPath {
-            view?.loadBackdropImage(url: urlBuilder.backdropUrl(path: backdropPath))
+            view?.loadBackdropImage(url: urlBuilder.backdrop(path: backdropPath))
         } else {
             view?.removeBackdropImage()
         }

@@ -14,14 +14,21 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
     weak var delegate: MovieListCoordinatorDelelegate?
 
     private static let paginationTrigerPercentage = 0.8
+    private static let initialPage = 1
 
     private let movieProvider: NetworkDataProviderProtocol
     private let urlBuilder: TheMovieDBUrlBuilderProtocol
 
-    fileprivate var currentResult: Result<Movie>?
-    fileprivate var movies: [Movie] = []
+    fileprivate var moviesData = MoviesData()
+    fileprivate var searchData = MoviesData()
+
+    fileprivate var currentData: MoviesData {
+        return searchString != nil ? searchData : moviesData
+    }
 
     fileprivate var loading = false
+    fileprivate var searchString: String?
+    fileprivate var searchDelayTimer: DispatchWorkItem?
 
     init(movieProvider: NetworkDataProviderProtocol, urlBuilder: TheMovieDBUrlBuilderProtocol) {
         self.movieProvider = movieProvider
@@ -30,29 +37,60 @@ final class MovieListViewModel: NSObject, CollectionListViewHandlerProtocol {
 
     func loadData() {
         view?.startLoading()
-        loadMovies(page: 1)
+        loadMovies()
     }
 
     func cellWillDisplay(indexPath: IndexPath) {
         guard loading == false,
-            let result = currentResult,
+            let result = currentData.currentResult,
             result.page < result.totalPages else {
             return
         }
 
-        if indexPath.row >= Int(MovieListViewModel.paginationTrigerPercentage * Double(movies.count)) {
-            loadMovies(page: result.page + 1)
+        if indexPath.row >= Int(MovieListViewModel.paginationTrigerPercentage * Double(currentData.movies.count)) {
+            if let search = searchString {
+                searchMovies(searchString: search, page: result.page + 1)
+            } else {
+                loadMovies(page: result.page + 1)
+            }
         }
     }
 
     func rowSelected(at indexPath: IndexPath) {
-        delegate?.movieSelected(movie: movies[indexPath.row])
+        delegate?.movieSelected(movie: currentData.movies[indexPath.row])
+    }
+
+    func searchEntered(_ searchString: String) {
+        guard !searchString.isEmpty,
+            searchString != self.searchString else {
+            return
+        }
+        self.searchString = searchString
+        self.searchDelayTimer?.cancel()
+
+        let searchDelayTimer = DispatchWorkItem { [weak self] in
+            self?.currentData.movies.removeAll()
+            self?.view?.reloadList()
+            self?.view?.startLoading()
+            self?.searchMovies(searchString: searchString)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + styleManager.slowAnimationDuration,
+                                      execute: searchDelayTimer)
+
+        self.searchDelayTimer = searchDelayTimer
+    }
+
+    func clearSearch() {
+        searchDelayTimer?.cancel()
+        searchString = nil
+        view?.reloadList()
     }
 }
 
 extension MovieListViewModel {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return movies.count
+        return currentData.movies.count
     }
 
     func collectionView(_ collectionView: UICollectionView,
@@ -63,7 +101,7 @@ extension MovieListViewModel {
             fatalError("Cannot load movie cell")
         }
 
-        let movie = movies[indexPath.row]
+        let movie = currentData.movies[indexPath.row]
         let movieViewModel = MovieCellViewModel(movie: movie,
                                                 urlBuilder: urlBuilder,
                                                 cellWidth: listView.cellWidth)
@@ -75,30 +113,46 @@ extension MovieListViewModel {
 
 // MARK: Helpers
 private extension MovieListViewModel {
-    func loadMovies(page: Int) {
-        loading = true
-        movieProvider.get(url: urlBuilder.nowPlayingURL(page: page)) { [weak self] (moviesResponse: Result<Movie>?, _) in
-            if let movies = moviesResponse, !movies.results.isEmpty {
-                let lastIndex = self?.movies.count
-                self?.currentResult = movies
-                self?.movies.append(contentsOf: movies.results)
+    func loadMovies(page: Int = MovieListViewModel.initialPage) {
+        performReques(url: urlBuilder.nowPlaying(page: page))
+    }
 
-                if let oldLastIndex = lastIndex {
-                    let newLastIndex = oldLastIndex + movies.results.count
-                    let indexes = (oldLastIndex..<newLastIndex).map { IndexPath(row: $0, section: 0) }
-                    DispatchUtils.renderUI {
-                        self?.view?.appendIndexes(indexes)
-                    }
-                }
+    func searchMovies(searchString: String, page: Int = MovieListViewModel.initialPage) {
+        performReques(url: urlBuilder.search(query: searchString, page: page))
+    }
+
+    func performReques(url: URL) {
+        loading = true
+        movieProvider.get(url: url) { [weak self] (moviesResponse: Result<Movie>?, _) in
+            if let movies = moviesResponse, !movies.results.isEmpty {
+                self?.handleResponse(movies)
             } else {
                 DispatchUtils.renderUI {
-                    self?.view?.showEmptyView()
+                    self?.view?.showEmptyView(allowRetry: self?.searchString == nil)
                 }
             }
             DispatchUtils.renderUI {
                 self?.view?.stopLoading()
             }
             self?.loading = false
+        }
+    }
+
+    func handleResponse(_ moviesResponse: Result<Movie>) {
+        let oldLastIndex = currentData.movies.count
+        currentData.currentResult = moviesResponse
+        currentData.movies.append(contentsOf: moviesResponse.results)
+
+        if oldLastIndex == 0 {
+            DispatchUtils.renderUI {
+                self.view?.reloadList()
+            }
+        } else {
+            let newLastIndex = oldLastIndex + moviesResponse.results.count
+            let indexes = (oldLastIndex..<newLastIndex).map { IndexPath(row: $0, section: 0) }
+            DispatchUtils.renderUI {
+                self.view?.appendIndexes(indexes)
+            }
         }
     }
 }

@@ -15,6 +15,12 @@ final class EmptyContentView: UIView {
 
     private var actionButton: UIButton?
 
+    var buttonHidden: Bool = false {
+        didSet {
+            actionButton?.isHidden = buttonHidden
+        }
+    }
+
     var retryHandler: (() -> Void)?
 
     override init(frame: CGRect) {
